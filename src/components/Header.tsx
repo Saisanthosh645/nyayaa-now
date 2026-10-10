@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Shield, AlertCircle, Menu, X, PhoneCall, Scale, BookOpen, Compass, ChevronDown, Check, Smartphone, Download, Sparkles, Globe, Mic, FileText, FolderLock, Users } from 'lucide-react';
+import { Shield, AlertCircle, Menu, X, PhoneCall, Scale, BookOpen, Compass, ChevronDown, Check, Smartphone, Download, Sparkles, Globe, Mic, FileText, FolderLock, Users, ShieldCheck } from 'lucide-react';
 import { Language, ActiveView } from '../types';
 import { translations } from '../data/translations';
 import { AshokaChakra } from './AshokaChakra';
@@ -134,6 +134,21 @@ export const Header: React.FC<HeaderProps> = ({
               >
                 <FileText className="w-3 h-3 text-blue-400" />
                 <span>02 Docs</span>
+              </button>
+
+              {/* Contract Scanner (Know Before You Sign) */}
+              <button
+                id="nav-contract-scanner"
+                onClick={() => handleNav({ type: 'contract-scanner' })}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                  currentView.type === 'contract-scanner'
+                    ? 'bg-cyan-500/25 text-cyan-300 border border-cyan-500/50 shadow-[0_0_10px_rgba(6,182,212,0.25)]'
+                    : 'text-slate-300 hover:text-white hover:bg-slate-800/80 border border-transparent'
+                }`}
+                title="Contract Scanner (Know Before You Sign)"
+              >
+                <ShieldCheck className="w-3 h-3 text-cyan-400" />
+                <span>Contracts</span>
               </button>
 
               {/* 03 Evidence */}
@@ -465,6 +480,18 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <FileText className="w-4 h-4 text-blue-400" />
               <span>{language === 'hi' ? '02 दस्तावेज़ विश्लेषण' : language === 'te' ? '02 పత్ర విశ్లేషణ' : '02 Document Intelligence'}</span>
+            </button>
+
+            <button
+              onClick={() => handleNav({ type: 'contract-scanner' })}
+              className={`flex items-center space-x-3 w-full px-4 py-3 rounded-xl text-sm font-semibold text-left transition-colors ${
+                currentView.type === 'contract-scanner'
+                  ? 'bg-cyan-500/25 text-cyan-300 border border-cyan-500/50'
+                  : 'text-cyan-300 bg-cyan-500/10 border border-cyan-500/20 hover:bg-cyan-500/20'
+              }`}
+            >
+              <ShieldCheck className="w-4 h-4 text-cyan-400" />
+              <span>{language === 'hi' ? 'अनुबंध जोखिम स्कैनर' : language === 'te' ? 'కాంట్రాక్ట్ స్కానర్' : 'Contract Scanner'}</span>
             </button>
 
             <button

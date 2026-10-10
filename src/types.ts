@@ -135,6 +135,7 @@ export type ActiveView =
   | { type: 'ai-assistant' }
   | { type: 'voice-assistant' }
   | { type: 'document-intelligence' }
+  | { type: 'contract-scanner' }
   | { type: 'evidence-intelligence' }
   | { type: 'lawyer-connection' }
   | { type: 'situation'; slug: string }

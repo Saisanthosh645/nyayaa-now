@@ -45,6 +45,8 @@ import { EvidenceIntelligence } from './components/evidence-intelligence/Evidenc
 import { EvidenceIntelligenceTeaser } from './components/evidence-intelligence/EvidenceIntelligenceTeaser';
 import { LawyerAuthorityConnection } from './components/lawyer-connection/LawyerAuthorityConnection';
 import { LawyerAuthorityTeaser } from './components/lawyer-connection/LawyerAuthorityTeaser';
+import { ContractScanner } from './components/contract-scanner/ContractScanner';
+import { ContractScannerTeaser } from './components/contract-scanner/ContractScannerTeaser';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<ActiveView>({ type: 'home' });
@@ -60,11 +62,15 @@ export default function App() {
 
   const t = translations[language];
 
-  // Synchronize URL hash for routing & direct links
+  // Synchronize URL hash & pathname for routing & direct links
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace(/^#\/?/, '');
-      if (!hash || hash === '') {
+      const path = window.location.pathname.replace(/^\//, '');
+
+      if (path === 'contract-scanner' || hash === 'contract-scanner' || hash === 'contracts' || hash.startsWith('contract')) {
+        setCurrentView({ type: 'contract-scanner' });
+      } else if (!hash || hash === '') {
         setCurrentView({ type: 'home' });
       } else if (hash.startsWith('situations/')) {
         const slug = hash.replace('situations/', '');
@@ -78,6 +84,8 @@ export default function App() {
         setCurrentView({ type: 'ai-assistant' });
       } else if (hash === 'document-intelligence' || hash === 'documents' || hash.startsWith('document')) {
         setCurrentView({ type: 'document-intelligence' });
+      } else if (hash === 'contract-scanner' || hash === 'contracts' || hash.startsWith('contract')) {
+        setCurrentView({ type: 'contract-scanner' });
       } else if (hash === 'evidence-intelligence' || hash === 'evidence' || hash.startsWith('evidence')) {
         setCurrentView({ type: 'evidence-intelligence' });
       } else if (hash === 'lawyer-connection' || hash === 'connect' || hash.startsWith('lawyer') || hash.startsWith('authorit')) {
@@ -105,6 +113,8 @@ export default function App() {
       window.location.hash = 'ai-assistant';
     } else if (view.type === 'document-intelligence') {
       window.location.hash = 'document-intelligence';
+    } else if (view.type === 'contract-scanner') {
+      window.location.hash = 'contract-scanner';
     } else if (view.type === 'evidence-intelligence') {
       window.location.hash = 'evidence-intelligence';
     } else if (view.type === 'lawyer-connection') {
@@ -254,6 +264,14 @@ export default function App() {
               <DocumentIntelligenceTeaser
                 language={language}
                 onOpenDocumentIntelligence={() => navigateTo({ type: 'document-intelligence' })}
+              />
+            </section>
+
+            {/* FEATURE: KNOW BEFORE YOU SIGN — AI CONTRACT RISK SCANNER TEASER */}
+            <section id="contract-scanner" className="w-full">
+              <ContractScannerTeaser
+                language={language}
+                onOpenContractScanner={() => navigateTo({ type: 'contract-scanner' })}
               />
             </section>
 
@@ -477,6 +495,19 @@ export default function App() {
         {/* VIEW 8: DOCUMENT INTELLIGENCE FULL PAGE */}
         {currentView.type === 'document-intelligence' && (
           <DocumentIntelligence
+            language={language}
+            onLanguageChange={handleLanguageChange}
+            onNavigateBack={() => navigateTo({ type: 'home' })}
+            onNavigateToAssistantWithPrompt={(prompt) => {
+              sessionStorage.setItem('nyaya_pending_prompt', prompt);
+              navigateTo({ type: 'ai-assistant' });
+            }}
+          />
+        )}
+
+        {/* VIEW: KNOW BEFORE YOU SIGN — AI CONTRACT RISK SCANNER FULL PAGE */}
+        {currentView.type === 'contract-scanner' && (
+          <ContractScanner
             language={language}
             onLanguageChange={handleLanguageChange}
             onNavigateBack={() => navigateTo({ type: 'home' })}

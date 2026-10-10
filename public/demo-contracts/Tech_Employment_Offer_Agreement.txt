@@ -1,0 +1,52 @@
+APEXCLOUD TECHNOLOGIES INDIA PRIVATE LIMITED
+Registered Office: Cessna Business Park, Outer Ring Road, Bengaluru - 560103
+
+EMPLOYMENT AGREEMENT & RESTRICTIVE COVENANTS
+
+Date: 12th October 2026
+
+To:
+Ms. Ananya Deshmukh,
+Bengaluru, Karnataka.
+
+Dear Ananya,
+
+We are pleased to offer you employment with ApexCloud Technologies India Pvt. Ltd. ("Company") as Senior Software Engineer - Cloud Platform, subject to the following contractual terms and covenants:
+
+1. COMMENCEMENT & PROBATION
+Your employment will commence on 1st November 2026. You will be on probation for a period of three (3) months. Upon satisfactory performance, your position will be confirmed in writing.
+
+2. REMUNERATION & JOINING BONUS
+(a) Total Cost to Company (CTC): INR 28,00,000/- per annum, payable in monthly installments on the last working day of each calendar month.
+(b) Joining Bonus: A one-time sign-on bonus of INR 2,00,000/- (Rupees Two Lakhs only) will be disbursed with your first month's salary. If you resign or leave the Company within twelve (12) months from your joining date for any reason, the entire Joining Bonus of INR 2,00,000/- shall be repaid immediately or deducted from your final settlement.
+
+3. NOTICE PERIOD & TERMINATION
+(a) During probation, either party may terminate this agreement with thirty (30) days written notice.
+(b) Post-confirmation, either party may terminate employment by giving ninety (90) calendar days prior written notice.
+(c) The Company reserves the sole discretion to relieve the Employee earlier by paying basic salary in lieu of notice. The Employee shall not have any right to buy out the notice period without express written approval from the Management.
+
+4. INTELLECTUAL PROPERTY ASSIGNMENT
+The Employee hereby irrevocably assigns to the Company all rights, title, and interest in and to all inventions, software code, algorithms, designs, documentation, and works of authorship created, conceived, or reduced to practice during the term of employment, whether or not created during working hours or using Company equipment.
+
+5. RESTRICTIVE COVENANTS & NON-COMPETE
+For a period of twelve (12) months following the termination or cessation of Employment for any reason, the Employee shall not directly or indirectly engage in, advise, consult with, invest in, or be employed by any company, startup, or enterprise operating in cloud infrastructure, developer tooling, or distributed systems anywhere in the territory of India.
+
+6. NON-SOLICITATION
+For twenty-four (24) months post-cessation, the Employee shall not directly or indirectly solicit any customer, client, or existing employee of the Company.
+
+7. GOVERNING LAW & JURISDICTION
+This Agreement is governed by the laws of India. Any disputes arising hereunder shall be subject to the exclusive jurisdiction of the competent courts in Bengaluru, Karnataka.
+
+Please sign and return the duplicate copy of this letter as acceptance of these terms.
+
+Yours sincerely,
+For ApexCloud Technologies India Pvt. Ltd.
+
+Authorized Signatory: _________________________
+Director - Talent & People Operations
+
+ACCEPTED AND AGREED:
+
+Signature: ___________________________________
+Name: Ananya Deshmukh
+Date: _______________________________________

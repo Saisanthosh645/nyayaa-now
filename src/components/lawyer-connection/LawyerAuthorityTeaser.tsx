@@ -25,10 +25,10 @@ export const LawyerAuthorityTeaser: React.FC<LawyerAuthorityTeaserProps> = ({
           
           {/* Left Column: Copy & Value Proposition */}
           <div className="space-y-4 max-w-2xl text-center lg:text-left">
-            {/* Feature 05 Badge */}
+            {/* Feature 04 Badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-teal-500/40 text-teal-300 text-xs font-bold shadow-md">
               <span className="flex items-center justify-center w-5 h-5 rounded-full bg-teal-500/20 text-teal-300 font-mono text-xs font-bold border border-teal-500/40">
-                05
+                04
               </span>
               <Compass className="w-3.5 h-3.5 text-teal-400" />
               <span className="uppercase tracking-wider">

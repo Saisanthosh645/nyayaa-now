@@ -30,7 +30,7 @@ export const ConnectionHero: React.FC<ConnectionHeroProps> = ({
       <div className="space-y-3 max-w-3xl">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-teal-500/30 text-teal-300 text-xs font-bold shadow-md">
           <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
-          <span>05 / LAWYER & AUTHORITY CONNECTION</span>
+          <span>04 / LAWYER & AUTHORITY CONNECTION</span>
           <AshokaChakra size={12} color="#14b8a6" speed="slow" />
         </div>
 

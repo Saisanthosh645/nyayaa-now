@@ -28,7 +28,10 @@ import {
   Globe,
   Zap,
   Play,
-  Square
+  Square,
+  Key,
+  X,
+  CheckCircle2
 } from 'lucide-react';
 import { Language } from '../types';
 import { AIResponse } from './ai-assistant/AIResponse';
@@ -81,6 +84,11 @@ export const AILegalAssistant: React.FC<AILegalAssistantProps> = ({
   const [expandedDossierIds, setExpandedDossierIds] = useState<Record<string, boolean>>({});
   const [isListening, setIsListening] = useState<boolean>(false);
   const [autoSpeak, setAutoSpeak] = useState<boolean>(false);
+  const [showKeyModal, setShowKeyModal] = useState<boolean>(false);
+  const [apiKeyInput, setApiKeyInput] = useState<string>(() => {
+    return typeof window !== 'undefined' ? localStorage.getItem('nyaya_gemini_api_key') || '' : '';
+  });
+  const [apiKeySaved, setApiKeySaved] = useState<boolean>(false);
 
   // Live Voice Room state
   const [liveVoiceState, setLiveVoiceState] = useState<LiveVoiceState>('IDLE');
@@ -93,6 +101,17 @@ export const AILegalAssistant: React.FC<AILegalAssistantProps> = ({
     citations?: string[];
     sayThisFirst?: string;
   } | null>(null);
+
+  const handleSaveApiKey = (key: string) => {
+    const trimmed = key.trim();
+    if (trimmed) {
+      localStorage.setItem('nyaya_gemini_api_key', trimmed);
+    } else {
+      localStorage.removeItem('nyaya_gemini_api_key');
+    }
+    setApiKeySaved(true);
+    setTimeout(() => setApiKeySaved(false), 2500);
+  };
 
   const conversationEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -518,6 +537,15 @@ export const AILegalAssistant: React.FC<AILegalAssistantProps> = ({
   // Starter Prompts
   const STARTER_PROMPTS = [
     {
+      icon: '🏡',
+      label: isHi ? 'जमीन पर अवैध कब्जा' : isTe ? 'భూమి అక్రమ ఆక్రమణ' : 'Land / Property Occupied',
+      prompt: isHi
+        ? 'मेरी जमीन पर किसी ने अवैध कब्जा कर लिया है। मेरे कानूनी अधिकार और त्वरित कदम क्या हैं?'
+        : isTe
+        ? 'నా భూమిని ఇతరులు అక్రమంగా ఆక్రమించి కబ్జా చేశారు. నా చట్టపరమైన హక్కులు ఏమిటి?'
+        : 'My land was unlawfully occupied by encroachers. What are my immediate legal remedies under Indian law?'
+    },
+    {
       icon: '🚔',
       label: isHi ? 'पुलिस ने रास्ते में रोका' : isTe ? 'పోలీసులు రోడ్డుపై ఆపారు' : 'Police stopped me on road',
       prompt: isHi
@@ -640,8 +668,19 @@ export const AILegalAssistant: React.FC<AILegalAssistantProps> = ({
           </button>
         </div>
 
-        {/* Right: Controls (Language + Auto-Speak + Clear + SOS) */}
+        {/* Right: Controls (Language + Auto-Speak + AI Engine + Clear + SOS) */}
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          {/* AI Engine Settings */}
+          <button
+            type="button"
+            onClick={() => setShowKeyModal(true)}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-semibold bg-slate-900 border-slate-800 text-slate-300 hover:text-white hover:border-amber-500/40 transition-all cursor-pointer"
+            title="Configure AI Engine / Gemini API"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+            <span className="text-[11px] font-medium hidden sm:inline">{apiKeyInput ? 'Gemini Live' : 'AI Engine'}</span>
+          </button>
+
           {/* Auto-Speak Toggle */}
           <button
             type="button"
@@ -1345,6 +1384,97 @@ export const AILegalAssistant: React.FC<AILegalAssistantProps> = ({
 
             </div>
 
+          </div>
+        </div>
+      )}
+
+      {/* AI Engine & Gemini Configuration Modal */}
+      {showKeyModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative w-full max-w-md bg-slate-900/95 border border-slate-800 rounded-3xl p-6 shadow-2xl shadow-black/60">
+            <div className="flex items-start justify-between gap-4 mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">AI Legal Engine</h3>
+                  <p className="text-xs text-slate-400">Dual-Mode: Cloud LLM + Local Statutory Engine</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowKeyModal(false)}
+                className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-4 text-xs text-slate-300">
+              <div className="p-3.5 rounded-2xl bg-slate-950/60 border border-slate-800 space-y-2">
+                <div className="flex items-center justify-between text-slate-200 font-semibold">
+                  <span>Engine Architecture</span>
+                  <span className="text-emerald-400 flex items-center gap-1 font-mono text-[11px]">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    Active & Resilient
+                  </span>
+                </div>
+                <p className="text-slate-400 text-[11px] leading-relaxed">
+                  Queries are processed first by Google Gemini for conversational depth and nuance, backed immediately by an offline verified Indian Statutory Engine (BNSS 2023, BNS, SRA 1963, DV Act, NI Act, CPA 2019).
+                </p>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-slate-200 font-semibold">
+                  Custom Gemini API Key <span className="text-slate-500 font-normal">(Optional)</span>
+                </label>
+                <p className="text-[11px] text-slate-400">
+                  Use your own Google AI Studio key for direct streaming quota, or leave blank to use the backend default.
+                </p>
+                <div className="relative mt-2">
+                  <input
+                    type="password"
+                    placeholder="AIzaSy..."
+                    value={apiKeyInput}
+                    onChange={(e) => setApiKeyInput(e.target.value)}
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-amber-400 focus:ring-1 focus:ring-amber-400/40 text-xs text-white placeholder-slate-600 outline-none pr-10 font-mono"
+                  />
+                  <Key className="w-4 h-4 text-slate-500 absolute right-3 top-3 pointer-events-none" />
+                </div>
+              </div>
+
+              {apiKeySaved && (
+                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-medium">
+                  <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+                  <span>Key saved securely to your browser local storage!</span>
+                </div>
+              )}
+
+              <div className="flex items-center gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={handleSaveApiKey}
+                  className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs shadow-lg shadow-amber-500/20 transition-all cursor-pointer"
+                >
+                  Save Configuration
+                </button>
+                {apiKeyInput && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setApiKeyInput('');
+                      localStorage.removeItem('nyaya_gemini_api_key');
+                      setApiKeySaved(true);
+                      setTimeout(() => setApiKeySaved(false), 2000);
+                    }}
+                    className="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-medium text-xs transition-colors cursor-pointer"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       )}

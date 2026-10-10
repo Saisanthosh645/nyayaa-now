@@ -11,7 +11,8 @@ import {
   FileText, 
   PhoneCall,
   Languages,
-  RotateCcw
+  RotateCcw,
+  MapPin
 } from 'lucide-react';
 import { Language } from '../../types';
 import { 
@@ -30,6 +31,7 @@ import { LawyerDirectory } from './LawyerDirectory';
 import { AuthorityDirectory } from './AuthorityDirectory';
 import { NyayaBriefingModal } from './NyayaBriefingModal';
 import { EmergencyHelpBanner } from './EmergencyHelpBanner';
+import { NearbyLawyerFinder } from './NearbyLawyerFinder';
 
 interface LawyerAuthorityConnectionProps {
   language: Language;
@@ -39,7 +41,7 @@ interface LawyerAuthorityConnectionProps {
   onNavigateToVoiceAssistant?: () => void;
 }
 
-type ViewTab = 'recommended' | 'authorities' | 'lawyers';
+type ViewTab = 'nearby' | 'recommended' | 'authorities' | 'lawyers';
 
 export const LawyerAuthorityConnection: React.FC<LawyerAuthorityConnectionProps> = ({
   language,
@@ -48,18 +50,19 @@ export const LawyerAuthorityConnection: React.FC<LawyerAuthorityConnectionProps>
   onNavigateToAssistantWithPrompt,
   onNavigateToVoiceAssistant
 }) => {
-  // State
-  const [activeTab, setActiveTab] = useState<ViewTab>('recommended');
+  // State: Default directly to Nearby Lawyers Search per user request
+  const [activeTab, setActiveTab] = useState<ViewTab>('nearby');
   const [isIntakeOpen, setIsIntakeOpen] = useState(false);
   const [isBriefingOpen, setIsBriefingOpen] = useState(false);
   const [selectedBriefingDestination, setSelectedBriefingDestination] = useState<HelpDestination | undefined>();
+  const [briefingContext, setBriefingContext] = useState<{ problem: string; city: string } | null>(null);
 
-  // Current routing result (Defaults to DLSA Hyderabad sample)
+  // Current routing result (Defaults to Bengaluru Tenancy sample)
   const [routingResult, setRoutingResult] = useState<RoutingResult>(() => {
     return LawyerAuthorityService.routeSituation({
-      category: 'notice',
+      category: 'rental',
       urgency: 'today',
-      location: { state: 'Telangana', district: 'Hyderabad', city: 'Hyderabad' },
+      location: { state: 'Karnataka', district: 'Bengaluru Urban', city: 'Bengaluru' },
       language
     });
   });
@@ -79,7 +82,7 @@ export const LawyerAuthorityConnection: React.FC<LawyerAuthorityConnectionProps>
   // Direct Path quick selector
   const handleSelectDirectPath = (path: 'legal-aid' | 'lawyer' | 'police' | 'emergency') => {
     if (path === 'lawyer') {
-      setActiveTab('lawyers');
+      setActiveTab('nearby');
     } else if (path === 'emergency') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
@@ -87,9 +90,17 @@ export const LawyerAuthorityConnection: React.FC<LawyerAuthorityConnectionProps>
     }
   };
 
-  // Briefing generation
+  // Briefing generation for generic selection
   const handleOpenBriefing = (dest?: HelpDestination) => {
     setSelectedBriefingDestination(dest || routingResult.primaryRecommendation);
+    setBriefingContext(null);
+    setIsBriefingOpen(true);
+  };
+
+  // Briefing generation specifically from Nearby Lawyer Finder
+  const handleOpenBriefingFromFinder = (lawyer: HelpDestination, userProblem: string, userCity: string) => {
+    setSelectedBriefingDestination(lawyer);
+    setBriefingContext({ problem: userProblem, city: userCity });
     setIsBriefingOpen(true);
   };
 
@@ -113,7 +124,7 @@ export const LawyerAuthorityConnection: React.FC<LawyerAuthorityConnectionProps>
           {/* Center Badge */}
           <div className="flex items-center gap-2">
             <span className="flex items-center justify-center w-6 h-6 rounded-full bg-teal-500/20 text-teal-300 font-mono text-xs font-black border border-teal-500/40">
-              05
+              04
             </span>
             <span className="text-xs sm:text-sm font-black tracking-tight text-white uppercase hidden sm:inline">
               Lawyer & Authority Connection
@@ -168,11 +179,25 @@ export const LawyerAuthorityConnection: React.FC<LawyerAuthorityConnectionProps>
         )}
 
         {/* WORKSPACE DIRECTORY TABS */}
-        <div className="space-y-6 pt-4">
+        <div className="space-y-6 pt-2">
           
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-2">
             <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-slate-900 border border-slate-800 overflow-x-auto">
               
+              {/* PRIMARY TAB: NEARBY LAWYERS (CITY & PROBLEM SEARCH) */}
+              <button
+                type="button"
+                onClick={() => setActiveTab('nearby')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                  activeTab === 'nearby'
+                    ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-slate-950 shadow-md'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                }`}
+              >
+                <MapPin className="w-3.5 h-3.5" />
+                <span>Find Nearby Lawyers (City Search)</span>
+              </button>
+
               <button
                 type="button"
                 onClick={() => setActiveTab('recommended')}
@@ -183,7 +208,7 @@ export const LawyerAuthorityConnection: React.FC<LawyerAuthorityConnectionProps>
                 }`}
               >
                 <Compass className="w-3.5 h-3.5" />
-                <span>Smart Recommendation</span>
+                <span>Smart AI Routing</span>
               </button>
 
               <button
@@ -209,7 +234,7 @@ export const LawyerAuthorityConnection: React.FC<LawyerAuthorityConnectionProps>
                 }`}
               >
                 <UserCheck className="w-3.5 h-3.5" />
-                <span>Find an Advocate</span>
+                <span>All Advocates Directory</span>
               </button>
 
             </div>
@@ -225,6 +250,14 @@ export const LawyerAuthorityConnection: React.FC<LawyerAuthorityConnectionProps>
               </button>
             )}
           </div>
+
+          {/* TAB 0: NEARBY LAWYERS DISCOVERY BY CITY & PROBLEM (PRIMARY FEATURE) */}
+          {activeTab === 'nearby' && (
+            <NearbyLawyerFinder
+              language={language}
+              onOpenBriefingForLawyer={handleOpenBriefingFromFinder}
+            />
+          )}
 
           {/* TAB 1: RECOMMENDED NEXT DESTINATION */}
           {activeTab === 'recommended' && (
@@ -295,9 +328,13 @@ export const LawyerAuthorityConnection: React.FC<LawyerAuthorityConnectionProps>
       {isBriefingOpen && (
         <NyayaBriefingModal
           briefing={LawyerAuthorityService.generateBriefing({
-            situationSummary: `Citizen is navigating statutory inquiry in ${routingResult.primaryRecommendation.jurisdiction}. Seeking procedural advice regarding official notice appearance.`,
+            situationSummary: briefingContext
+              ? `Citizen in ${briefingContext.city} is facing: "${briefingContext.problem}". Seeking advocate consultation and statutory notice guidance.`
+              : `Citizen is navigating statutory inquiry in ${routingResult.primaryRecommendation.jurisdiction}. Seeking procedural advice.`,
             urgency: 'today',
-            jurisdiction: routingResult.primaryRecommendation.jurisdiction
+            jurisdiction: briefingContext
+              ? briefingContext.city
+              : routingResult.primaryRecommendation.jurisdiction
           })}
           destination={selectedBriefingDestination}
           onClose={() => setIsBriefingOpen(false)}

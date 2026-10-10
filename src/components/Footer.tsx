@@ -100,6 +100,17 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, language, onOpenSos,
               <li>
                 <button
                   onClick={() => {
+                    onNavigate({ type: 'contract-scanner' });
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className="text-cyan-400 hover:text-cyan-300 font-semibold transition-colors flex items-center gap-1"
+                >
+                  <span>Know Before You Sign (Contract Scanner)</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => {
                     onNavigate({ type: 'home' });
                     setTimeout(() => {
                       const el = document.getElementById('situation-selector');
